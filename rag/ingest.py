@@ -29,9 +29,9 @@ def initialize_vector_store(collection_name="documents"):
         persist_directory="./db/chrome_langchain_db"
     )
 
-vector_store = initialize_vector_store()
+default_vector_store = initialize_vector_store()
 
-def ingest_file(file_path, vector_store=vector_store):
+def ingest_file(file_path, vector_store=default_vector_store):
     if not file_path.lower().endswith(".pdf"):
         raise ValueError("Only PDF files are supported.")
 
@@ -44,8 +44,8 @@ def ingest_file(file_path, vector_store=vector_store):
     )
 
     documents = text_splitter.split_documents(loaded_documents)
-    # Track chunks per page
     chunks_by_page = {}
+
     for i in range(len(documents)):
         page_num = documents[i].metadata['page']
         if page_num not in chunks_by_page:
@@ -58,7 +58,6 @@ def ingest_file(file_path, vector_store=vector_store):
             "page": page_num,
             "chunk_id": f"{page_num}:{chunks_by_page[page_num]}"
         }
-        # Add chunk_id to metadata
         documents[i].metadata = metadata
         
         chunk_summary = summarize_chunk(documents[i].page_content)
@@ -68,21 +67,10 @@ def ingest_file(file_path, vector_store=vector_store):
     
     vector_store.add_documents(documents)
 
-def search_documents_with_score(query, vector_store=vector_store, k=4):
-    """
-    Perform a similarity search with relevance scores.
-    
-    Args:
-        vector_store: The initialized vector store
-        query (str): The search query
-        k (int, optional): Number of top results to return. Defaults to 4.
-    
-    Returns:
-        List of tuples containing (document, similarity_score)
-    """
+def search_documents_with_score(query, vector_store=default_vector_store, k=4):
     return vector_store.similarity_search_with_score(query, k=k)
 
-def return_chunk_by_id(chunk_id, vector_store=vector_store):
+def return_chunk_by_id(chunk_id, vector_store=default_vector_store):
     chunks = vector_store.get(include=["metadatas", "documents"])
     metadatas = chunks['metadatas']
     documents = chunks['documents']
@@ -95,18 +83,14 @@ def return_chunk_by_id(chunk_id, vector_store=vector_store):
             }
     return None
 
-def return_documents_summary(vector_store=vector_store):
+def return_documents_summary(vector_store=default_vector_store):
     chunks = vector_store.get(include=["metadatas"])
     metadatas = chunks['metadatas']
-
-    # Sort metadata by page number and chunk_id
     sorted_metadatas = sorted(metadatas, key=lambda x: (x['page'], int(x['chunk_id'].split(':')[1])))
-
     return sorted_metadatas
 
-def condensed_metadata(vector_store=vector_store):
+def condensed_metadata(vector_store=default_vector_store):
     metadata = return_documents_summary(vector_store)
-    
     formatted_metadata = ""
     for data in metadata:
         formatted_metadata += f"Chunk ID: {data['chunk_id']}\n"
@@ -114,5 +98,4 @@ def condensed_metadata(vector_store=vector_store):
         formatted_metadata += f"Topic of this chunk: {data['topic']}\n"
         formatted_metadata += f"Summary of this chunk: {data['summary']}\n"
         formatted_metadata += "---\n"
-    
     return formatted_metadata

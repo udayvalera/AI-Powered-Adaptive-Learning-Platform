@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #Local Imports
-from ingest import condensed_metadata
+from ingest import condensed_metadata, initialize_vector_store
 from prompts import ROADMAP_TEMPLATE
 from models import Models
 
@@ -46,9 +46,11 @@ prompt = ROADMAP_TEMPLATE.partial(
 
 chain = prompt | roadmap_model | parser
 
-def create_roadmap(condensed_metadata):
+def create_roadmap(filename):
     try:
-        roadmap = chain.invoke({"text" : condensed_metadata})
+        vector_store = initialize_vector_store(collection_name=filename)
+        condensed_metadata_text = condensed_metadata(vector_store=vector_store)
+        roadmap = chain.invoke({"text" : condensed_metadata_text})
         return roadmap.model_dump()
     except Exception as e:
         print(f"Error creating roadmap: {e}")

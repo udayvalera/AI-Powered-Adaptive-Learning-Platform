@@ -45,22 +45,23 @@ prompt = QUIZ_TEMPLATE.partial(
 
 chain = prompt | quiz_model | parser
 
-def format_related_chunks(node):
+def format_related_chunks(node, vector_store):
     node_topic = node["topic"]
     related_chunks = node["related_chunks"]
     
     formatted_text = f"Topic: {node_topic}\n---\n"
     
     for chunk_id in related_chunks:
-        chunk = return_chunk_by_id(chunk_id)
+        chunk = return_chunk_by_id(chunk_id, vector_store)
         if chunk:
             formatted_text += f"Chunk ID: {chunk_id}\n"
             formatted_text += f"Content: {chunk['content']}\n"
             formatted_text += "---\n"
-    
     return formatted_text
 
-def create_quiz(formatted_text):
+def create_quiz(node, filename):
+    vector_store = initialize_vector_store(collection_name=filename)
+    formatted_text = format_related_chunks(node, vector_store)
     try:
         quiz = chain.invoke({"text" : formatted_text})
         return quiz.model_dump()
@@ -80,7 +81,13 @@ if __name__ == "__main__":
 
     formatted_text = format_related_chunks(node)
     quiz = create_quiz(formatted_text)
-    print(quiz)
+    for question in quiz["quiz"]:
+        print(f"Question: {question['question']}")
+        print(f"Options: {question['options']}")
+        print(f"Correct Answer: {question['correct_answer']}")
+        print(f"Explanation: {question['explanation']}")
+        print(f"Related Chunks: {question['related_chunks']}")
+        print("-" * 50)
     
 
 
