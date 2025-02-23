@@ -4,13 +4,15 @@ import os
 import json
 import uuid
 from flask_cors import CORS
+from flask import request, jsonify
+from db_manager import DBManager
 
 #Local Imports
 from ingest import condensed_metadata, initialize_vector_store, ingest_file, return_chunk_by_id, return_documents_summary, search_documents_with_score
 from quiz import create_quiz
 from roadmap import create_roadmap
-from db_manager import DBManager
-from flask import request, jsonify
+from chat_with_chunk import chat_with_chunk
+from chat import chat_with_docs
 
 # Initialize database manager
 db_manager = DBManager()
@@ -173,6 +175,63 @@ def get_quiz():
         else:
             return jsonify({"error": "Failed to create quiz"}), 500
     except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/chat-with-chunk', methods=['POST'])
+def chat_endpoint():
+    # Get the current file from cookie
+    current_filename = request.cookies.get('current_file')
+    if not current_filename:
+        return jsonify({"error": "No file selected"}), 400
+
+    # Get the request data
+    data = request.get_json()
+    print(data)
+    if not data:
+        return jsonify({"error": "No request data provided"}), 400
+
+    # Extract required fields
+    node_data = data.get('node_data')
+    user_query = data.get('query')
+
+    if not node_data:
+        return jsonify({"error": "No node data provided"}), 400
+    if not user_query:
+        return jsonify({"error": "No query provided"}), 400
+
+    try:
+        # Call the chat function from chat_with_chunk
+        response = chat_with_chunk(user_query, node_data, current_filename)
+        return jsonify({"response": response}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/chat', methods=['POST'])
+def global_chat_endpoint():
+    # Get the current file from cookie
+    current_filename = request.cookies.get('current_file')
+    if not current_filename:
+        return jsonify({"error": "No file selected"}), 400
+
+    # Get the request data
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No request data provided"}), 400
+
+    # Extract user query
+    user_query = data.get('query')
+    if not user_query:
+        return jsonify({"error": "No query provided"}), 400
+
+    try:
+        # Call the chat function from chat module
+        response = chat_with_docs(user_query, collection_name=current_filename)
+        print(response)
+        return jsonify({"response": response}), 200
+    except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':

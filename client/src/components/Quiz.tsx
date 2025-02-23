@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check, X, RefreshCw } from 'lucide-react';
 import { quizService } from '../services/api';
-import { quizCache } from './Roadmap';
 
 interface Question {
   question_id: number;
@@ -38,18 +37,6 @@ export default function Quiz({ quiz }: QuizProps) {
       setIsLoading(true);
       setError(null);
       
-      // Check if quiz is in cache
-      const cachedQuiz = quizCache[quiz.node_id];
-      if (cachedQuiz) {
-        setQuestions(cachedQuiz.quiz);
-        setSelectedAnswers(new Array(cachedQuiz.quiz.length).fill(null));
-        setCurrentQuestion(0);
-        setHasSubmitted(false);
-        setIsLoading(false);
-        return;
-      }
-      
-      // If not in cache, fetch from server
       const cookies = document.cookie.split(';');
       const roadmapCookie = cookies.find(cookie => cookie.trim().startsWith('roadmap_data='));
       if (!roadmapCookie) {

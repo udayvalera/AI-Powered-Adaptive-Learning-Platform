@@ -360,10 +360,11 @@ Chunk Id: 5:3
 Content: Gravity acts as a downward force on the vertical component, influencing the time of flight and overall trajectory.
 ---
 
-AI Response:
+Expected Response:
 Gravity plays a crucial role in projectile motion by continuously accelerating the object downward, influencing the vertical component of motion. This results in a curved, parabolic trajectory as the object moves forward. The time an object stays in the air and its maximum height are both determined by gravitational acceleration. [Source: 5:3]
 
-Additional Considerations:
+Additional Instructions:
+-The [Source: page_number:chunk_number] STRICTLY has to be included at the end of the response.
 - If the user’s question is only partially addressed by the chunks, inform them that additional context may be needed.
 - Avoid hallucinations—do not introduce information not present in the given chunks.
 - Ensure that the response is clear and well-structured for easy comprehension.
@@ -375,3 +376,40 @@ Here is the Chunk Context:
 {context}
   """
 )
+
+TRANSCRIPT_TEMPLATE = """
+"You are an AI assistant tasked with generating a plain transcript that explains the given text. Provide a structured, coherent, and comprehensive explanation while maintaining clarity and accuracy.
+
+Instructions:
+1. Understand the Context:
+   - The text contains key concepts, definitions, and explanations.
+   - Synthesize the information into a well-organized transcript.
+
+2. Transcript Construction:
+   - Capture the core meaning without repetition.
+   - Organize the explanation logically for easy comprehension.
+   - Maintain a plain and neutral tone without adding interpretations or embellishments.
+
+3. Content Integration Guidelines:
+   - Merge related concepts cohesively.
+   - Preserve essential information, definitions, and explanations.
+   - Arrange the content progressively to facilitate understanding.
+
+4. Tone & Style:
+   - Maintain objectivity and neutrality without opinions or assumptions.
+   - Use simple, precise language that prioritizes clarity.
+   - Exclude introductions, summaries, or extra explanations beyond the given text.
+
+Example Input:
+'Newton’s Laws of Motion: 
+1. An object at rest stays at rest, and an object in motion stays in motion unless acted upon by an external force.
+2. The force acting on an object is equal to its mass times acceleration (F=ma).
+3. For every action, there is an equal and opposite reaction.'
+
+Expected Output:
+'Newton’s Laws of Motion describe the fundamental principles of movement. The First Law, known as the Law of Inertia, states that objects remain in their current state unless influenced by an external force. The Second Law defines the relationship between force, mass, and acceleration, expressed mathematically as F=ma. The Third Law asserts that every action results in an equal and opposite reaction, explaining interactions between objects. These principles form the foundation of classical mechanics.'
+
+The transcript must be structured, accurate, and directly derived from the given text without additional interpretations or unnecessary reformulations."
+
+Here is the Input Text: 
+"""

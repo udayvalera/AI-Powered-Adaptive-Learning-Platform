@@ -1,6 +1,7 @@
 from models import Models
 from ingest import return_chunk_by_id, initialize_vector_store
 from prompts import CHUNK_TEMPLATE
+import re
 
 model = Models()
 chunk_model = model.chunk_model
@@ -16,11 +17,29 @@ def format_related_chunks(node, vector_store):
             formatted_text += "---\n"
     return formatted_text
 
-def chat(text, node, filename):
+
+def filter_think_tags(response_content):
+    """
+    Filters out <think> tags and their content from the response text.
+    
+    Args:
+        response_content (str): Text containing potential <think> tags
+        
+    Returns:
+        str: Text with <think> tags and their content removed
+    """
+    pattern = r'<think>.*?</think>\s*'
+    filtered_content = re.sub(pattern, '', response_content, flags=re.DOTALL)
+    return filtered_content.strip()
+
+def chat_with_chunk(text, node, filename):
     vector_store = initialize_vector_store(filename)
     context = format_related_chunks(node, vector_store)
     response = chain.invoke({"user_query": text, "context": context})
-    return response
+    
+    # Filter out thinking tags from response
+    filtered_response = filter_think_tags(response.content)
+    return filtered_response
 
 if __name__ == "__main__":
     node = {

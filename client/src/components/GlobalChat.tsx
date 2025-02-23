@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, Lightbulb, BookOpen, Loader2 } from 'lucide-react';
+import { Send, Bot, Lightbulb, Loader2 } from 'lucide-react';
 import { chatService } from '../services/api';
 
 interface Message {
@@ -84,7 +84,7 @@ const SimpleMarkdownRenderer = ({ content = '' }) => {
   return <div className="markdown-content">{parseContent(textContent)}</div>;
 };
 
-export default function Chat({ topic }: { topic: string }) {
+export default function GlobalChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -113,29 +113,16 @@ export default function Chat({ topic }: { topic: string }) {
     setIsLoading(true);
 
     try {
-      let response;
-      if (topic === "the entire learning roadmap") {
-        response = await chatService.sendGlobalMessage(input);
-      } else {
-        // Get roadmap data from cookie
-        const cookies = document.cookie.split(';');
-        const roadmapCookie = cookies.find(cookie => cookie.trim().startsWith('roadmap_data='));
-        if (!roadmapCookie) {
-          throw new Error('Roadmap data not found');
-        }
-        
-        const roadmapData = JSON.parse(roadmapCookie.split('=')[1]);
-        const currentNodeData = roadmapData.roadmap.find((node: any) => node.topic === topic);
-        if (!currentNodeData) {
-          throw new Error('Node data not found');
-        }
+      const response = await axios.post('http://localhost:5000/chat', {
+        query: input
+      }, {
+        withCredentials: true
+      });
 
-        response = await chatService.sendMessage(input, currentNodeData);
-      }
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: response
+        content: response.data.response
       };
 
       setMessages(prev => [...prev, aiMessage]);
@@ -153,14 +140,14 @@ export default function Chat({ topic }: { topic: string }) {
 
   return (
     <div className="flex flex-col h-[600px] bg-white">
-      {/* Educational Header */}
+      {/* Chat Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-lg">
         <div className="flex items-center gap-3 mb-2">
-          <BookOpen className="w-6 h-6" />
-          <h2 className="text-xl font-semibold">Learning Assistant</h2>
+          <Bot className="w-6 h-6" />
+          <h2 className="text-xl font-semibold">Global Chat Assistant</h2>
         </div>
         <p className="text-blue-100">
-          Ask questions about {topic} to deepen your understanding
+          Ask questions about any topic in the document
         </p>
       </div>
 
@@ -169,9 +156,9 @@ export default function Chat({ topic }: { topic: string }) {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
             <Lightbulb className="w-12 h-12 mb-4 text-blue-500" />
-            <h3 className="text-lg font-medium mb-2">Start Learning</h3>
+            <h3 className="text-lg font-medium mb-2">Start a Conversation</h3>
             <p className="max-w-sm">
-              Ask questions about concepts, request explanations, or seek clarification about {topic}
+              Ask any question about the document's content
             </p>
           </div>
         ) : (
@@ -195,7 +182,7 @@ export default function Chat({ topic }: { topic: string }) {
                   <div className="prose prose-sm max-w-none">
                     <div className="flex items-center gap-2 mb-3">
                       <Bot className="w-5 h-5 text-blue-500" />
-                      <span className="font-medium text-blue-500">Learning Assistant</span>
+                      <span className="font-medium text-blue-500">AI Assistant</span>
                     </div>
                     <SimpleMarkdownRenderer content={message.content} />
                   </div>
@@ -225,7 +212,7 @@ export default function Chat({ topic }: { topic: string }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Ask about ${topic}...`}
+              placeholder="Ask anything about the document..."
               disabled={isLoading}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />

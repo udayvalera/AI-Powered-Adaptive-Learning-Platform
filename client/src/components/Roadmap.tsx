@@ -1,47 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { Roadmap } from '../types';
 import { RoadmapNode } from './RoadmapNode';
 import { Map, MessageSquare } from 'lucide-react';
 import { Modal } from './Modal';
 import Chat from './Chat';
-import { quizService } from '../services/api';
 
 interface RoadmapProps {
   data: Roadmap;
 }
 
-interface QuizCache {
-  [key: number]: any;
-}
-
-export const quizCache: QuizCache = {};
-
 export function Roadmap({ data }: RoadmapProps) {
   const [isGlobalChatOpen, setIsGlobalChatOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const prefetchQuizzes = async () => {
-      try {
-        const fetchPromises = data.roadmap.map(async (node) => {
-          try {
-            const response = await quizService.getQuiz({ node_id: node.node_id, topic: node.topic, node_data: node });
-            quizCache[node.node_id] = response;
-          } catch (error) {
-            console.error(`Failed to fetch quiz for node ${node.node_id}:`, error);
-          }
-        });
-
-        await Promise.all(fetchPromises);
-      } catch (error) {
-        console.error('Error prefetching quizzes:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    prefetchQuizzes();
-  }, [data.roadmap]);
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4">
@@ -72,9 +41,8 @@ export function Roadmap({ data }: RoadmapProps) {
               isLast={index === data.roadmap.length - 1}
               position={index % 2 === 0 ? 'left' : 'right'}
               index={index}
-              isLoading={isLoading}
             />
-          ))})
+          ))}
         </div>
       </div>
 

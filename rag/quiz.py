@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #Local Imports
-from ingest import return_chunk_by_id
+from ingest import return_chunk_by_id, initialize_vector_store
 from prompts import QUIZ_TEMPLATE
 from models import Models
 

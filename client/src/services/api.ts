@@ -10,27 +10,33 @@ const api = axios.create({
 });
 
 export const chatService = {
-  async sendMessage(message: string) {
+  async sendMessage(message: string, nodeData: any) {
     try {
-      const response = await api.post('/chat/completions', {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: "You are a helpful educational assistant that provides clear, concise explanations with examples."
-          },
-          {
-            role: "user",
-            content: message
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
+      const response = await axios.post('http://localhost:5000/chat-with-chunk', {
+        query: message,
+        node_data: nodeData
+      }, {
+        withCredentials: true
       });
 
-      return response.data.choices[0].message.content;
+      return response.data.response;
     } catch (error) {
       console.error('Error sending message:', error);
+      throw error;
+    }
+  },
+
+  async sendGlobalMessage(message: string) {
+    try {
+      const response = await axios.post('http://localhost:5000/chat', {
+        query: message
+      }, {
+        withCredentials: true
+      });
+
+      return response.data.response;
+    } catch (error) {
+      console.error('Error sending global message:', error);
       throw error;
     }
   }

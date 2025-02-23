@@ -38,8 +38,16 @@ class Models:
             temperature=0,
             )
 
-        self.chunk_model = ChatOllama(
-            base_url= os.environ.get("OLLAMA_BASE_URL"),
-            model=os.environ.get("OLLAMA_SUMMARY_MODEL"),
-            temperature=0
-        )
+        self.chunk_model = ChatOpenAI(
+            base_url=os.environ.get("DEEPSEEK_BASE_URL"),
+            api_key=os.environ.get("DEEPSEEK_API_KEY"),
+            model_name=os.environ.get("DEEPSEEK_MODEL"),
+            temperature=0,
+            )
+
+        self.transcript_model = ChatOpenAI(
+            base_url=os.environ.get("DEEPSEEK_BASE_URL"),
+            api_key=os.environ.get("DEEPSEEK_API_KEY"),
+            model_name=os.environ.get("DEEPSEEK_MODEL"),
+            temperature=0,
+            )
