@@ -1,0 +1,65 @@
+[RoadmapNode(node_id=1, topic='Transformer Architecture Fundamentals', related_chunks=['0:1', '0:2', '1:5', '2:1', '8:2'], summary='Core architecture of Transformer models including encoder-decoder structure, self-attention layers, and parallelization advantages over RNNs/CNNs.', difficulty='Beginner', estimated_time='1.5 hours'), RoadmapNode(node_id=2, topic='Attention Mechanisms Deep Dive', related_chunks=['1:2', '1:4', '2:2', '3:1', '3:2', '3:3', '4:1'], summary='Scaled dot-product attention, multi-head attention, and comparison of additive vs dot-product approaches for sequence modeling.', difficulty='Intermediate', estimated_time='2 hours'), RoadmapNode(node_id=3, topic='Encoder-Decoder Architecture', related_chunks=['1:6', '4:2', '4:3', '4:4'], summary='Stacked self-attention layers, position-wise feed-forward networks, and masked attention in decoder for auto-regressive properties.', difficulty='Intermediate', estimated_time='2 hours'), RoadmapNode(node_id=4, topic='Positional Encoding Strategies', related_chunks=['5:1', '5:2', '4:4'], summary='Sinusoidal vs learned positional embeddings, handling sequence order without recurrence, and extrapolation capabilities.', difficulty='Intermediate', estimated_time='1.5 hours'), RoadmapNode(node_id=5, topic='Model Training & Optimization', related_chunks=['6:3', '6:4', '7:3', '7:4', '8:1'], summary='Adam optimizer configuration, dropout strategies, beam search parameters, and GPU utilization for efficient training.', difficulty='Advanced', estimated_time='2.5 hours'), RoadmapNode(node_id=6, topic='Performance Evaluation Metrics', related_chunks=['0:2', '7:1', '7:2', '8:3'], summary='BLEU score analysis, training cost comparisons, and state-of-the-art results on WMT 2014 tasks.', difficulty='Intermediate', estimated_time='1.5 hours'), RoadmapNode(node_id=7, topic='Advanced Attention Applications', related_chunks=['1:3', '1:4', '5:3', '5:4', '6:2'], summary='Handling long-range dependencies, computational complexity analysis, and interpretable attention distributions.', difficulty='Advanced', estimated_time='2 hours'), RoadmapNode(node_id=8, topic='Model Variations & Comparisons', related_chunks=['5:5', '6:1', '8:3', '9:3', '10:1'], summary='Comparison with convolutional/recurrent approaches, kernel width vs self-attention tradeoffs, and mixture-of-experts layers.', difficulty='Advanced', estimated_time='2 hours')]
+
+
+Formatted
+
+Node 1: Transformer Model Fundamentals
+Summary: Core architecture of Transformer models and their advantages over RNN/CNN-based approaches for sequence transduction tasks.
+Difficulty: Beginner
+Estimated Time: 1.5 hours
+Related Chunks: ['0:1', '0:2', '1:2', '8:2']
+--------------------------------------------------
+Node 2: Attention Mechanisms
+Summary: Understanding self-attention and scaled dot-product attention as fundamental building blocks of Transformers.
+Difficulty: Intermediate
+Estimated Time: 2 hours
+Related Chunks: ['1:4', '1:5', '2:2', '3:1']
+--------------------------------------------------
+Node 3: Encoder-Decoder Architecture
+Summary: Detailed structure of encoder/decoder stacks with multi-head attention and position-wise feedforward networks.
+Difficulty: Intermediate
+Estimated Time: 2.5 hours
+Related Chunks: ['1:6', '2:1', '4:2', '4:3']
+--------------------------------------------------
+Node 4: Scaled Dot-Product & Multi-Head Attention
+Summary: Implementation details of attention mechanisms including dimensionality management and parallel processing.
+Difficulty: Intermediate
+Estimated Time: 2 hours
+Related Chunks: ['3:2', '3:3', '4:1', '4:4']
+--------------------------------------------------
+Node 5: Positional Encoding Strategies
+Summary: Sinusoidal vs learned positional embeddings and their impact on sequence modeling.
+Difficulty: Intermediate
+Estimated Time: 1.5 hours
+Related Chunks: ['5:1', '5:2', '5:5', '8:2']
+--------------------------------------------------
+Node 6: Model Architecture Components
+Summary: Critical components including residual connections, layer normalization, and feed-forward networks.
+Difficulty: Intermediate
+Estimated Time: 2 hours
+Related Chunks: ['2:1', '4:3', '6:2', '9:1']
+--------------------------------------------------
+Node 7: Training Optimization
+Summary: Adam optimizer configuration, learning rate scheduling, and dropout strategies for efficient training.
+Difficulty: Advanced
+Estimated Time: 2 hours
+Related Chunks: ['6:3', '6:4', '7:3', '10:2']
+--------------------------------------------------
+Node 8: Performance Evaluation
+Summary: Analysis of BLEU scores, training costs, and comparison with previous state-of-the-art models.
+Difficulty: Intermediate
+Estimated Time: 1.5 hours
+Related Chunks: ['7:1', '7:2', '7:4', '8:3']
+--------------------------------------------------
+Node 9: Comparative Analysis with RNN/CNN
+Summary: Computational complexity and parallelization advantages over traditional architectures.
+Difficulty: Advanced
+Estimated Time: 2 hours
+Related Chunks: ['5:3', '5:4', '6:1', '8:3']
+--------------------------------------------------
+Node 10: Model Variations & Ablation Studies
+Summary: Impact of attention head count, key size variations, and positional encoding methods.
+Difficulty: Advanced
+Estimated Time: 2.5 hours
+Related Chunks: ['7:4', '8:1', '8:3', '9:4']
+--------------------------------------------------
